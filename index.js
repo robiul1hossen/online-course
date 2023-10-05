@@ -80,7 +80,7 @@ async function run() {
     app.delete("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-      const result = await usersCollection.findOneAndDelete(filter);
+      const result = await usersCollection.deleteOne(filter);
       res.send(result);
     });
 
@@ -98,10 +98,9 @@ async function run() {
       res.send(result);
     });
 
-    // data get from cart
+    // get course from cart
     app.get("/carts", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
       if (!email) {
         return res.send([]);
       }
@@ -110,7 +109,7 @@ async function run() {
       return res.send(result);
     });
 
-    // data add to cart
+    // add course to cart
     app.post("/carts", async (req, res) => {
       const cartData = req.body;
       try {
@@ -120,6 +119,15 @@ async function run() {
         console.error("Error adding to cart:", error);
         res.status(500).json({ error: "Internal server error" });
       }
+    });
+
+    // delete course from cart
+    app.delete("/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(filter);
+      res.send(result);
     });
 
     // create/launch a new course
